@@ -3,6 +3,7 @@
 import * as PushAPI from '@pushprotocol/restapi';
 import { fetchUrl } from './insights';
 import { OnRpcRequestHandler } from '@metamask/snaps-types';
+import { ManageStateOperation } from '@metamask/rpc-methods/dist/restricted/manageState'
 
 /**
  * Get a message from the origin. For demonstration purposes only.
@@ -84,7 +85,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       const params = request.params as { filename: string, cid: string };
       return snap.request({
         method: 'snap_manageState',
-        params: { operation: 'update', newState: { filename: params.filename, cid: params.cid } },
+        params: { operation: ManageStateOperation.UpdateState, newState: { filename: params.filename, cid: params.cid } },
         
       });
       
@@ -93,7 +94,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       return snap.request({
         method: 'snap_manageState',
         params: {
-          operation: 'get'
+          operation: ManageStateOperation.GetState,
       },
       });
 
