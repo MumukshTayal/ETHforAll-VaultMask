@@ -94,7 +94,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       return snap.request({
         method: 'snap_manageState',
         params: {
-          operation: ManageStateOperation.GetState,
+          operation: ManageStateOperation.GetState
       },
       });
 

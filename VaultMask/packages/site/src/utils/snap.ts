@@ -87,13 +87,14 @@ export const uploadFile = async () => {
 export const storeFile = async (filename: string[], cid: string[]) => {
   await window.ethereum.request({
     method: 'wallet_invokeSnap',
-    params: 
+    params: {
       // defaultSnapOrigin,
-      {
+      snapId: defaultSnapOrigin,
+      request: {
         method: 'upload_file',
         params: { filename, cid },
       },
-    
+    },
   });
 };
 

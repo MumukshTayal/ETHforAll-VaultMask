@@ -648,22 +648,22 @@ const Index = () => {
         }
         }
 
-        const PK = '346ae509707f6a86ac266c7bab0f5831cdf5dd21b57d62b995b6641464c6e67e'; // channel private key
-        const Pkey = `0x${PK}`;
-        const signer = new ethers.Wallet(Pkey);
-        if (address === '') {
-          await getUserAddress();
-        }
-        const apiResponse = await PushAPI.payloads.sendNotification({
-          signer,
-          type: 3, // target
-          identityType: 1, // ipfs payload
-          ipfsHash: cid, // IPFS hash of the payload
-          recipients: `eip155:5:${address}`, // recipient address
-          channel: 'eip155:5:0x9B21e0f54e3A66f55291b6E64370089C288eC5B9', // your channel address
-          env: 'staging'
-        });
-        console.log(apiResponse);
+        // const PK = '346ae509707f6a86ac266c7bab0f5831cdf5dd21b57d62b995b6641464c6e67e'; // channel private key
+        // const Pkey = `0x${PK}`;
+        // const signer = new ethers.Wallet(Pkey);
+        // if (address === '') {
+        //   await getUserAddress();
+        // }
+        // const apiResponse = await PushAPI.payloads.sendNotification({
+        //   signer,
+        //   type: 3, // target
+        //   identityType: 1, // ipfs payload
+        //   ipfsHash: cid, // IPFS hash of the payload
+        //   recipients: `eip155:5:${address}`, // recipient address
+        //   channel: 'eip155:5:0x9B21e0f54e3A66f55291b6E64370089C288eC5B9', // your channel address
+        //   env: 'staging'
+        // });
+        // console.log(apiResponse);
         setsubmitLoading2(false);
       }
     } catch (err) {
