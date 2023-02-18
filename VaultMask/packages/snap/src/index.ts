@@ -2,7 +2,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import * as PushAPI from '@pushprotocol/restapi';
 import { fetchUrl } from './insights';
-import { OnRpcRequestHandler } from '@metamask/snap-types';
+import { OnRpcRequestHandler } from '@metamask/snaps-types';
 
 /**
  * Get a message from the origin. For demonstration purposes only.
@@ -84,25 +84,24 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       const params = request.params as { filename: string, cid: string };
       return snap.request({
         method: 'snap_manageState',
-        params: [
-          'update', { filename: params.filename, cid: params.cid },
-        ],
+        params: { operation: 'update', newState: { filename: params.filename, cid: params.cid } },
+        
       });
       
 
     case 'get_file':
       return snap.request({
         method: 'snap_manageState',
-        params: [
-          'get'
-        ],
+        params: {
+          operation: 'get'
+      },
       });
 
     case 'push_notifications': {
       const msg = await fetchNotifications(
         '0x9B21e0f54e3A66f55291b6E64370089C288eC5B9',
       );
-      return wallet.request({
+      return snap.request({
         method: 'snap_confirm',
         params: [
           {

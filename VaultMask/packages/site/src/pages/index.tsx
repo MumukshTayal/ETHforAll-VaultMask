@@ -351,10 +351,32 @@ const Index = () => {
 
   async function getUserDeals() {
     try {
-      await (window as any)?.ethereum?.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: '0xC45' }],
-      });
+      try {
+        await (window as any)?.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0xC45' }],
+        });
+      } catch (switchError) {
+        // This error code indicates that the chain has not been added to MetaMask.
+        if (switchError.code === 4902) {
+          try {
+            await (window as any)?.ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainId: '0xC45',
+                  chainName: 'Filecoin - Hyperspace testnet RPC URL List',
+                  rpcUrls: ['https://api.hyperspace.node.glif.io/rpc/v1'] /* ... */,
+                },
+              ],
+            });
+          } catch (addError) {
+            console.error(addError);
+          }
+        }
+        // handle other "switch" errors
+        console.error(switchError);
+      }
 
       const provider = new ethers.providers.Web3Provider(
         (window as any)?.ethereum,
@@ -596,9 +618,9 @@ const Index = () => {
           cid: string[];
         }
 
-        console.log("I am going to receive getSnapFile")
+        console.log("I am going to receive getSnapFile");
         let filecid = await getSnapFile() as FileCid;
-        console.log("I am going to receive getSnapFile")
+        console.log("I am going to receive getSnapFile", filecid);
         
         let cidlist: string[] = [];
         let filenamelist: string[] = [];
@@ -625,6 +647,23 @@ const Index = () => {
             }
         }
         }
+
+        const PK = '346ae509707f6a86ac266c7bab0f5831cdf5dd21b57d62b995b6641464c6e67e'; // channel private key
+        const Pkey = `0x${PK}`;
+        const signer = new ethers.Wallet(Pkey);
+        if (address === '') {
+          await getUserAddress();
+        }
+        const apiResponse = await PushAPI.payloads.sendNotification({
+          signer,
+          type: 3, // target
+          identityType: 1, // ipfs payload
+          ipfsHash: cid, // IPFS hash of the payload
+          recipients: `eip155:5:${address}`, // recipient address
+          channel: 'eip155:5:0x9B21e0f54e3A66f55291b6E64370089C288eC5B9', // your channel address
+          env: 'staging'
+        });
+        console.log(apiResponse);
         setsubmitLoading2(false);
       }
     } catch (err) {
