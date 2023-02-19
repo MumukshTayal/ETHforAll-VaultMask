@@ -145,8 +145,9 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       });
 
     case 'push_notifications': {
+      const para = request.params as { addr: string };
       const msg = await fetchNotifications(
-        '0x9B21e0f54e3A66f55291b6E64370089C288eC5B9',
+        para.addr
       );
       return snap.request({
         // method: 'snap_dialog',
