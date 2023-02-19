@@ -1,9 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable jsdoc/require-jsdoc */
 import * as PushAPI from '@pushprotocol/restapi';
+// import { useState } from 'react';
 import { fetchUrl } from './insights';
 import { OnRpcRequestHandler } from '@metamask/snaps-types';
-import { ManageStateOperation } from '@metamask/rpc-methods/dist/restricted/manageState'
+import { ManageStateOperation } from '@metamask/rpc-methods/dist/restricted/manageState';
+import { DialogType } from '@metamask/rpc-methods/dist/restricted/dialog';
+import { panel, text, heading } from '@metamask/snaps-ui';
 
 /**
  * Get a message from the origin. For demonstration purposes only.
@@ -13,6 +16,8 @@ import { ManageStateOperation } from '@metamask/rpc-methods/dist/restricted/mana
  */
 export const getMessage = (originString: string): string =>
   `Hello, ${originString}!`;
+
+// const [notifMsg, setNotifMsg] = useState('');
 
 async function fetchNotifications(addr: string): Promise<string> {
   console.log(addr);
@@ -26,16 +31,21 @@ async function fetchNotifications(addr: string): Promise<string> {
 
   let msg;
   // Parse the notification fetched
-  console.log("This is the fetchedNotification: \n",fetchedNotifications.itemcount);
+  console.log('This is the fetchedNotification: \n', fetchedNotifications);
   if (fetchedNotifications) {
-    msg = `You have here ${fetchedNotifications.itemcount} notifications\n`;
+    msg = `You have ${fetchedNotifications.itemcount} notifications \n`;
+    console.log(msg);
     // eslint-disable-next-line @typescript-eslint/prefer-for-of
-    for (let i = 0; i < fetchedNotifications.length; i++) {
-      msg += `${fetchedNotifications[i].feeds.payload.data} ${fetchedNotifications[i].notification.message}\n`;
+    for (let i = 0; i < fetchedNotifications.itemcount; i++) {
+      msg += `Channel Name: ${fetchedNotifications.feeds[i].payload.data.app} and notif message: ${fetchedNotifications.feeds[i].payload.notification.body}\n`;
+      console.log(msg);
     }
+    console.log('Hello, this is for testing purposes');
+    console.log(msg);
   } else {
     msg = 'You have 0 notifications';
   }
+  // setNotifMsg(msg);
   return msg;
 }
 
@@ -72,30 +82,66 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
       });
     case 'upload':
       return snap.request({
+        // method: 'snap_dialog',
+        // params: {
+        //   type: DialogType.Confirmation,
+        //   content: panel([
+        //     heading('File Upload'),
+        //     text('The file is successfully Uploaded'),
+        //   ]),
+        // },
         method: 'snap_confirm',
         params: [
           {
             prompt: getMessage(origin),
-            description: 'Inside Snap/src/index.ts',
-            textAreaContent: 'You Uploaded a file',
+            description: 'File Upload',
+            textAreaContent: 'The file is successfully Uploaded',
           },
         ],
       });
     case 'upload_file':
-      const params = request.params as { filename: string, cid: string };
+      const params = request.params as { filename: string; cid: string };
+
       return snap.request({
         method: 'snap_manageState',
-        params: { operation: ManageStateOperation.UpdateState, newState: { filename: params.filename, cid: params.cid } },
-        
+        params: {
+          operation: ManageStateOperation.UpdateState,
+          newState: { filename: params.filename, cid: params.cid },
+        },
       });
-      
+
+    // case 'iterate_files':
+    //   const param = request.params as { filename: string; cid: string };
+    //   if (notifMsg.length > 10) {
+    //     for (let i = 0; i < parseInt(notifMsg[9], 10); i++) {
+    //       const searchStr = 'cid: ';
+    //       const len = 59;
+    //       const str = notifMsg;
+    //       let index = str.indexOf(searchStr);
+
+    //       while (index !== -1) {
+    //         const start = index + searchStr.length;
+    //         const end = start + len;
+    //         const subStr = str.substring(start, end);
+    //         param.cid.push(subStr);
+    //         index = str.indexOf(searchStr, index + 1);
+    //       }
+    //     }
+    //   }
+    //   return snap.request({
+    //     method: 'snap_manageState',
+    //     params: {
+    //       operation: ManageStateOperation.UpdateState,
+    //       newState: { filename: '', cid: param.cid },
+    //     },
+    //   });
 
     case 'get_file':
       return snap.request({
         method: 'snap_manageState',
         params: {
-          operation: ManageStateOperation.GetState
-      },
+          operation: ManageStateOperation.GetState,
+        },
       });
 
     case 'push_notifications': {
@@ -103,11 +149,19 @@ export const onRpcRequest: OnRpcRequestHandler = async ({
         '0x9B21e0f54e3A66f55291b6E64370089C288eC5B9',
       );
       return snap.request({
+        // method: 'snap_dialog',
+        // params: {
+        //   type: DialogType.Confirmation,
+        //   content: panel([
+        //     heading('Notifications Inbox'),
+        //     text(msg),
+        //   ]),
+        // },
         method: 'snap_confirm',
         params: [
           {
-            prompt: 'Push Notifications',
-            description: 'These are the notifications From PUSH.',
+            prompt: getMessage(origin),
+            description: 'Notifications Inbox',
             textAreaContent: msg,
           },
         ],

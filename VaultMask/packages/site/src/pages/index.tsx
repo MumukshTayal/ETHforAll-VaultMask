@@ -311,42 +311,50 @@ const Index = () => {
   };
 
   async function getUserAddress() {
-    try {
-      window.ethereum
-        .request({
-          method: 'wallet_requestSnaps',
-          // This entire object is ultimately just a list of requested permissions.
-          // Every snap has an associated permission or permissions, given the prefix `wallet_snap_`
-          // and its ID. Here, the `wallet_snap` property exists so that callers don't
-          // have to specify the full permission permission name for each snap.
-          params:
-            {
-              'npm:@metamask/example-snap': {},
-              'npm:fooSnap': {
-                // The optional version argument allows requesting
-                // SemVer version range, with semantics same as in
-                // package.json ranges.
-                version: '^1.0.2',
-              },
+    // try {
+    //   window.ethereum
+    //     .request({
+    //       method: 'wallet_requestSnaps',
+    //       // This entire object is ultimately just a list of requested permissions.
+    //       // Every snap has an associated permission or permissions, given the prefix `wallet_snap_`
+    //       // and its ID. Here, the `wallet_snap` property exists so that callers don't
+    //       // have to specify the full permission permission name for each snap.
+    //       params:
+    //         {
+    //           'npm:@metamask/example-snap': {},
+    //           'npm:fooSnap': {
+    //             // The optional version argument allows requesting
+    //             // SemVer version range, with semantics same as in
+    //             // package.json ranges.
+    //             version: '^1.0.2',
+    //           },
               
-              eth_accounts: {},
-            },
+    //           eth_accounts: {},
+    //         },
           
-        })
-        .then((res) => {
-          if ((res as { accounts: string[] }) !== null) {
-            setAddress((res as { accounts: string[] }).accounts[0]);
-          }
-        });
-    } catch (error) {
-      // The `wallet_requestSnaps` call will throw if the requested permissions are
-      // rejected.
-      if (error.code === 4001) {
-        console.log('The user rejected the request.');
-      } else {
-        console.log('Unexpected error:', error);
-      }
-    }
+    //     })
+    //     .then((res) => {
+    //       if ((res as { accounts: string[] }) !== null) {
+    //         setAddress((res as { accounts: string[] }).accounts[0]);
+    //       }
+    //     });
+    // } catch (error) {
+    //   // The `wallet_requestSnaps` call will throw if the requested permissions are
+    //   // rejected.
+    //   if (error.code === 4001) {
+    //     console.log('The user rejected the request.');
+    //   } else {
+    //     console.log('Unexpected error:', error);
+    //   }
+    // }
+    const provider = new ethers.providers.Web3Provider(
+      (window as any)?.ethereum,
+    );
+
+    const signer = provider.getSigner(0);
+    const addrs = await signer.getAddress();
+    setAddress(addrs);
+    console.log(addrs);
   }
 
   async function getUserDeals() {
@@ -632,7 +640,7 @@ const Index = () => {
         }
         cidlist.push(cid);
         filenamelist.push(imageFile.name);
-
+        console.log('lorem ipsum dolor sit amet, consectetur adipis', address);
         await storeFile(filenamelist, cidlist);
         let newElements: [string, string][] = filedata;
         for (let i = 0; i < cidlist.length; i++) {
@@ -648,12 +656,12 @@ const Index = () => {
         }
         }
 
-        // const PK = '346ae509707f6a86ac266c7bab0f5831cdf5dd21b57d62b995b6641464c6e67e'; // channel private key
-        // const Pkey = `0x${PK}`;
-        // const signer = new ethers.Wallet(Pkey);
-        // if (address === '') {
-        //   await getUserAddress();
-        // }
+        const PK = '346ae509707f6a86ac266c7bab0f5831cdf5dd21b57d62b995b6641464c6e67e'; // channel private key, openly shared with the client for the hackathon project
+        const Pkey = `0x${PK}`;
+        const signer = new ethers.Wallet(Pkey);
+        if (address === '') {
+          await getUserAddress();
+        }
         // const apiResponse = await PushAPI.payloads.sendNotification({
         //   signer,
         //   type: 3, // target
@@ -663,8 +671,29 @@ const Index = () => {
         //   channel: 'eip155:5:0x9B21e0f54e3A66f55291b6E64370089C288eC5B9', // your channel address
         //   env: 'staging'
         // });
-        // console.log(apiResponse);
+        
+        const apiResponse = await PushAPI.payloads.sendNotification({
+          signer,
+          type: 3, // target
+          identityType: 2, // direct payload
+          notification: {
+            title: 'Uploaded file metadata is as follows:',
+            body: `cid: ${cid}, filename: ${imageFile.name}`,
+          },
+          payload: {
+            title: `[sdk-test] payload title`,
+            body: `cid: ${cid}, filename: ${imageFile.name}`,
+            cta: '',
+            img: ''
+          },
+          recipients: 'eip155:5:0x9B21e0f54e3A66f55291b6E64370089C288eC5B9', // recipient address
+          channel: 'eip155:5:0x9B21e0f54e3A66f55291b6E64370089C288eC5B9', // your channel address
+          env: 'staging'
+        });
+        console.log(apiResponse);
+
         setsubmitLoading2(false);
+        console.log("loading is set to off for snap upload");
       }
     } catch (err) {
       console.log(err);

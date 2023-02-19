@@ -64,10 +64,10 @@ export const sendHello = async () => {
   await window.ethereum.request({
     method: 'wallet_invokeSnap',
     params: {
-      // defaultSnapOrigin,
-      // {
+      snapId: defaultSnapOrigin,
+      request: {
         method: 'hello',
-      // },
+      },
     },
   });
 };
@@ -78,13 +78,16 @@ export const uploadFile = async () => {
     params: 
       //defaultSnapOrigin,
       {
+        snapId: defaultSnapOrigin,
+        request: {
         method: 'upload',
+        },
       },
     
   });
 };
 
-export const storeFile = async (filename: string[], cid: string[]) => {
+export const storeFile = async ( filename: string[], cid: string[]) => {
   await window.ethereum.request({
     method: 'wallet_invokeSnap',
     params: {
@@ -120,7 +123,11 @@ export const showNotifications = async () => {
     params: 
       // defaultSnapOrigin,
       {
-        method: 'push_notifications',
+        snapId: defaultSnapOrigin,
+        request: {
+          method: 'push_notifications',
+        }
+        
       },
     
   });

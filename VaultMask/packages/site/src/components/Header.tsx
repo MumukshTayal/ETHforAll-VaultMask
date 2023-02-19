@@ -11,7 +11,10 @@ import 'rsuite/dist/rsuite.min.css';
 import GearIcon from '@rsuite/icons/Gear';
 import NoticeIcon from '@rsuite/icons/Notice';
 import ImageIcon from '@rsuite/icons/Image';
-var Web3 = require('web3');
+var ethers = require('ethers');
+
+
+
 const HeaderWrapper = styled.header`
 display: flex;
 flex-direction: row;
@@ -101,48 +104,57 @@ export const Header = ({
   };
 
   async function getUserAddress() {
-    try {
-      window.ethereum
-        .request({
-          method: 'wallet_requestSnaps',
-          params:
-            {
+    // try {
+    //   window.ethereum
+    //     .request({
+    //       method: 'wallet_requestSnaps',
+    //       params:
+    //         {
               
-                'npm:@metamask/example-snap': {},
-                'npm:fooSnap': {
-                  // The optional version argument allows requesting
-                  // SemVer version range, with semantics same as in
-                  // package.json ranges.
-                  version: '^1.0.2',
-                },
+    //             'npm:@metamask/example-snap': {},
+    //             'npm:fooSnap': {
+    //               // The optional version argument allows requesting
+    //               // SemVer version range, with semantics same as in
+    //               // package.json ranges.
+    //               version: '^1.0.2',
+    //             },
               
-              eth_accounts: {},
-            },
+    //           eth_accounts: {},
+    //         },
           
-        })
-        .then((res) => {
-          if ((res as { accounts: string[] }) !== null) {
-            setAddress((res as { accounts: string[] }).accounts[0]);
-          }
-        });
-    } catch (error) {
-      // The `wallet_requestSnaps` call will throw if the requested permissions are
-      // rejected.
-      if (error.code === 4001) {
-        console.log('The user rejected the request.');
-      } else {
-        console.log('Unexpected error:', error);
-      }
-    }
+    //     })
+    //     .then((res) => {
+    //       if ((res as { accounts: string[] }) !== null) {
+    //         setAddress((res as { accounts: string[] }).accounts[0]);
+    //       }
+    //     });
+    // } catch (error) {
+    //   // The `wallet_requestSnaps` call will throw if the requested permissions are
+    //   // rejected.
+    //   if (error.code === 4001) {
+    //     console.log('The user rejected the request.');
+    //   } else {
+    //     console.log('Unexpected error:', error);
+    //   }
+    // }
+    const provider = new ethers.providers.Web3Provider(
+      (window as any)?.ethereum,
+    );
+    const signer = provider.getSigner(0);
+    const addrs = await signer.getAddress();
+    setAddress(addrs);
+    console.log(addrs);
+    return addrs;
   }
 
   async function fetchNotifications(): Promise<string> {
-    console.log(address);
-    await getUserAddress();
-    console.log(address);
-    console.log(`eip155:5:${address}`);
+    const addrs = await getUserAddress();
+    console.log(addrs);
+    
+    console.log(addrs);
+    console.log(`eip155:5:${addrs}`);
     const fetchedNotifications = await PushAPI.user.getFeeds({
-      user: `eip155:5:${address}`,
+      user: `eip155:5:${addrs}`,
       env: 'staging',
     });
     let msg;
