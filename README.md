@@ -72,7 +72,7 @@ The primary function of vaultmask is storage. It has two kinds of storage option
 
 ### Notifications
 
-The secondary function of vaultmask is storage. It has two kinds of storage option depending upon the user requirement:
+VaultMask leverages push-protocol as well snap confirmations to keep the user notified.
 
 **Push Notifications**
 
@@ -80,6 +80,7 @@ The secondary function of vaultmask is storage. It has two kinds of storage opti
 - Notify in snap
 - Regular updates from subscribed channel
 - functions: `push_notification`
+- (Note: Because of technical difficulties, the project (for now) only shows notifications corresponding to one address (i.e. for address: '0x9B21e0f54e3A66f55291b6E64370089C288eC5B9' 
 
 **Custom Messages**
 
