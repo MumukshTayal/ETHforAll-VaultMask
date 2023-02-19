@@ -301,12 +301,12 @@ const Index = () => {
 
   const handleShowNotificationsClick = async () => {
     try {
-      const provider = new ethers.providers.Web3Provider(
-        (window as any)?.ethereum,
-      );
-      const signer = provider.getSigner(0);
-      const addrs = await signer.getAddress();
-      await showNotifications(addrs);
+//       const provider = new ethers.providers.Web3Provider(
+//         (window as any)?.ethereum,
+//       );
+//       const signer = provider.getSigner(0);
+//       const addrs = await signer.getAddress();
+      await showNotifications();
       await fetchNotifications();
       // await fetchNotifications();
     } catch (e) {
