@@ -9,6 +9,8 @@
 
 `Vautlmask` is a user-friendly file storing & sharing solution that allows users to upload, store & share files in seconds and for free (applicable only if you store files with `Vaultsnap`). Besides, if you wish to store the files permanently, you can also do that at dearth cheap cost, thanks to FVM.
 
+`SMART_CONTRACT_ADDRESS = '0x9e294e5Bde166200a968E67d0a9eEd975f2555AE'`.
+
 ## Table Of Contents
 
 - [Quick Start](#quick-start)
