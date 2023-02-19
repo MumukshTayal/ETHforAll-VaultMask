@@ -29,7 +29,7 @@ Follow these steps to run the snap on your system:
 - Clone the repo.
 - Go to the Hardhat folder and add .env file. Export the private key from your Metamask Flask account and add it to the .env file. Following is an example:
 
-`PRIVATE_KEY = '93890b27049e34dc1c9b954d76c8c366b9aa4349b46bc33391e2bdcb8348ac86'`.
+`PRIVATE_KEY = '346ae509707f6a86ac266c7bab0f5831cdf5dd21b57d62b995b6641464c6e67e'`.
 
 Attention: The information above is intended for illustration purposes only. Never disclose your private keys to anyone.
 
