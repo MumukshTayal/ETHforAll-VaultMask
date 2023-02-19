@@ -117,7 +117,7 @@ export const getSnapFile = async () => {
   return snapstore;
 };
 
-export const showNotifications = async (addre: string) => {
+export const showNotifications = async () => {
   await window.ethereum.request({
     method: 'wallet_invokeSnap',
     params: 
@@ -126,7 +126,6 @@ export const showNotifications = async (addre: string) => {
         snapId: defaultSnapOrigin,
         request: {
           method: 'push_notifications',
-          params: { addre },
         }
         
       },
